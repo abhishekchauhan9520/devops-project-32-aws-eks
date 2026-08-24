@@ -1,0 +1,10 @@
+region                  = "us-east-1"
+environment             = "platform"
+cluster_name            = "platform-eks"
+kubernetes_version      = "1.35"
+admin_role_arn          = "arn:aws:iam::123456789012:role/platform-eks-admin"
+api_public_access_cidrs = ["203.0.113.10/32"]
+node_instance_types     = ["m6i.large"]
+node_min_size           = 2
+node_desired_size       = 2
+node_max_size            = 4
