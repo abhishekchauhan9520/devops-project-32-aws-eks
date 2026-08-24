@@ -1,0 +1,39 @@
+name: Terraform EKS Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform format check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init
+        run: terraform init -backend=false -upgrade=false
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Repository security assertions
+        run: bash tests/test_structure.sh
+
+      - name: Static module checks
+        run: |
+          grep -q 'terraform-aws-modules/eks/aws' main.tf
+          grep -q 'terraform-aws-modules/vpc/aws' main.tf
+          grep -q 'version = "21.24.2"' main.tf
+          grep -q 'version = "6.6.1"' main.tf
+          grep -q 'version = "6.60.0"' versions.tf
